@@ -49,7 +49,7 @@ int create_output_dev(const char* uinput_path, output_dev_type_t type) {
 		case output_dev_imu: {
 #if defined(UI_SET_PHYS_STR)
 			ioctl(fd, UI_SET_PHYS_STR(18), PHYS_STR);
-#els
+#else
 			fprintf(stderr, "UI_SET_PHYS_STR unavailable.\n");
 #endif
 
@@ -567,16 +567,18 @@ static void decode_ev(output_dev_t *const out_dev, message_t *const msg) {
 				} else {
 					printf("Mode correctly switched to %d\n", new_mode);
 
-					if (new_mode == 0) {
-						printf("Mode switched to virtual DualSense for game mode.\n");
-						out_dev->logic->gamepad_output = (out_dev->logic->flags & LOGIC_FLAGS_VIRT_DS5_ENABLE) ? GAMEPAD_OUTPUT_DS5 : ((out_dev->logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4: GAMEPAD_OUTPUT_EVDEV);
-					} else if (new_mode == 1) {
-						printf("Mode switched to virtual evdev for lizard mode.\n");
-						out_dev->logic->gamepad_output = GAMEPAD_OUTPUT_EVDEV;
-					} else if (new_mode == 2) {
-						printf("Mode switched to virtual DualShock for macro mode.\n");
-						out_dev->logic->gamepad_output = (out_dev->logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4 : GAMEPAD_OUTPUT_EVDEV;
-					}
+					// if (new_mode == 0) {
+					// 	printf("Mode switched to virtual DualSense for game mode.\n");
+					// 	out_dev->logic->gamepad_output = (out_dev->logic->flags & LOGIC_FLAGS_VIRT_DS5_ENABLE) ? GAMEPAD_OUTPUT_DS5 : ((out_dev->logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4: GAMEPAD_OUTPUT_EVDEV);
+					// } else if (new_mode == 1) {
+					// 	printf("Mode switched to virtual evdev for lizard mode.\n");
+					// 	out_dev->logic->gamepad_output = GAMEPAD_OUTPUT_EVDEV;
+					// } else if (new_mode == 2) {
+					// 	printf("Mode switched to virtual DualShock for macro mode.\n");
+					// 	out_dev->logic->gamepad_output = (out_dev->logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4 : GAMEPAD_OUTPUT_EVDEV;
+					// }
+					out_dev->logic->gamepad_output = GAMEPAD_OUTPUT_DS5;
+
 				}
             } else {
                 // Do nothing effectively discarding the input

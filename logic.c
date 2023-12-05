@@ -42,19 +42,19 @@ int logic_create(logic_t *const logic) {
 
     const int queue_init_res = queue_init(&logic->input_queue, 128);
     
-    const int virt_ds4_thread_creation = pthread_create(&logic->virt_ds4_thread, NULL, virt_ds4_thread_func, (void*)(logic));
-	if (virt_ds4_thread_creation != 0) {
-		fprintf(stderr, "Error creating virtual DualShock4 thread: %d. Will use evdev as output.\n", virt_ds4_thread_creation);
+    // const int virt_ds4_thread_creation = pthread_create(&logic->virt_ds4_thread, NULL, virt_ds4_thread_func, (void*)(logic));
+	// if (virt_ds4_thread_creation != 0) {
+	// 	fprintf(stderr, "Error creating virtual DualShock4 thread: %d. Will use evdev as output.\n", virt_ds4_thread_creation);
 
-        logic->gamepad_output = GAMEPAD_OUTPUT_EVDEV;
-	} else {
-        printf("Creation of virtual DualShock4 succeeded: using it as the defaut output.\n");
-        logic->flags |= LOGIC_FLAGS_VIRT_DS4_ENABLE;
-        logic->gamepad_output = GAMEPAD_OUTPUT_DS4;
-    }
+    //     logic->gamepad_output = GAMEPAD_OUTPUT_EVDEV;
+	// } else {
+    //     printf("Creation of virtual DualShock4 succeeded: using it as the defaut output.\n");
+    //     logic->flags |= LOGIC_FLAGS_VIRT_DS4_ENABLE;
+    //     logic->gamepad_output = GAMEPAD_OUTPUT_DS4;
+    // }
 
     const int virt_ds5_thread_creation = pthread_create(&logic->virt_ds5_thread, NULL, virt_ds5_thread_func, (void*)(logic));
-	if (virt_ds4_thread_creation != 0) {
+	if (virt_ds5_thread_creation != 0) {
 		fprintf(stderr, "Error creating virtual DualSense thread: %d.\n", virt_ds5_thread_creation);
 	} else {
         printf("Creation of virtual DualShock4 succeeded: using it as the defaut output.\n");
@@ -73,14 +73,16 @@ int logic_create(logic_t *const logic) {
 
         logic->flags |= LOGIC_FLAGS_PLATFORM_ENABLE;
 
-        if (is_mouse_mode(&logic->platform)) {
-            printf("Gamepad output will default to evdev when the controller is set in mouse mode.\n");
-            logic->gamepad_output = GAMEPAD_OUTPUT_EVDEV;
-        } else if (is_gamepad_mode(&logic->platform)) {
-            logic->gamepad_output = (logic->flags & LOGIC_FLAGS_VIRT_DS5_ENABLE) ? GAMEPAD_OUTPUT_DS5 : ((logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4: GAMEPAD_OUTPUT_EVDEV);
-        } else if (is_macro_mode(&logic->platform)) {
-            logic->gamepad_output = (logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4 : GAMEPAD_OUTPUT_EVDEV;
-        }
+        // if (is_mouse_mode(&logic->platform)) {
+        //     printf("Gamepad output will default to evdev when the controller is set in mouse mode.\n");
+        //     logic->gamepad_output = GAMEPAD_OUTPUT_EVDEV;
+        // } else if (is_gamepad_mode(&logic->platform)) {
+        //     logic->gamepad_output = (logic->flags & LOGIC_FLAGS_VIRT_DS5_ENABLE) ? GAMEPAD_OUTPUT_DS5 : ((logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4: GAMEPAD_OUTPUT_EVDEV);
+        // } else if (is_macro_mode(&logic->platform)) {
+        //     logic->gamepad_output = (logic->flags & LOGIC_FLAGS_VIRT_DS4_ENABLE) ? GAMEPAD_OUTPUT_DS4 : GAMEPAD_OUTPUT_EVDEV;
+        // }
+
+        logic->gamepad_output = GAMEPAD_OUTPUT_DS5;
 
         printf("Gamepad output is %d\n", (int)logic->gamepad_output);
     } else {
